@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>生日快乐动图贺卡</title>
+    <style>
+      :root {
+        --bg-1: #fff6fb;
+        --bg-2: #ffe7f4;
+        --bg-3: #f5eaff;
+        --ink: #542257;
+        --primary: #ff5ca8;
+        --secondary: #8d6bff;
+        --accent: #ffd56e;
+        --teal: #7fd7ff;
+        --card: rgba(255, 255, 255, 0.72);
+        --border: rgba(255, 255, 255, 0.6);
+        --shadow: 0 24px 60px rgba(255, 102, 171, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.92), transparent 28%),
+          radial-gradient(circle at 80% 10%, rgba(255, 216, 110, 0.55), transparent 22%),
+          radial-gradient(circle at 78% 82%, rgba(141, 107, 255, 0.28), transparent 25%),
+          linear-gradient(145deg, var(--bg-1), var(--bg-2) 48%, var(--bg-3));
+      }
+
+      .scene {
+        position: relative;
+        min-height: 100vh;
+        display: block;
+        padding: 48px 40px 88px;
+        isolation: isolate;
+      }
+
+      .card {
+        margin: 0 auto;
+      }
+
+      .orb,
+      .sparkle,
+      .confetti,
+      .balloon {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .orb {
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        filter: blur(16px);
+        opacity: 0.68;
+        animation: drift 9s ease-in-out infinite alternate;
+      }
+
+      .orb-a {
+        top: -60px;
+        left: -30px;
+        background: rgba(255, 138, 196, 0.38);
+      }
+
+      .orb-b {
+        right: -40px;
+        bottom: -80px;
+        background: rgba(141, 107, 255, 0.28);
+        animation-duration: 12s;
+      }
+
+      .card {
+        position: relative;
+        z-index: 2;
+        width: min(760px, 92vw);
+        padding: 54px 46px 78px;
+        border-radius: 34px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.62));
+        border: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow);
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        background: rgba(255, 92, 168, 0.1);
+        color: var(--primary);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        animation: pulse 2.2s ease-in-out infinite;
+      }
+
+      .title {
+        margin: 24px 0 10px;
+        font-size: clamp(38px, 6vw, 68px);
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0.01em;
+        font-family: "Hannotate SC", "STKaiti", "KaiTi", "DFKai-SB", "PingFang SC", cursive;
+        text-shadow: 0 10px 30px rgba(255, 92, 168, 0.16);
+        animation: bounceIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) both, pulse 2.8s ease-in-out 1.2s infinite;
+      }
+
+      .title-break {
+        display: block;
+        margin-top: 8px;
+      }
+
+      .highlight {
+        display: inline-block;
+        background: linear-gradient(120deg, #ff5ca8, #ff8c59, #8d6bff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subtitle {
+        margin: 26px auto 0;
+        max-width: 520px;
+        font-size: clamp(16px, 2vw, 22px);
+        line-height: 1.7;
+        color: rgba(84, 34, 87, 0.76);
+        animation: fadeUp 0.9s ease 0.35s both;
+      }
+
+      .wish-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 24px;
+        margin-top: 34px;
+      }
+
+      .wish-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 13px;
+        color: rgba(84, 34, 87, 0.62);
+        background: rgba(255, 255, 255, 0.42);
+        border: 1px solid rgba(255, 255, 255, 0.58);
+        box-shadow: 0 8px 18px rgba(179, 142, 196, 0.08);
+        letter-spacing: 0.08em;
+        backdrop-filter: blur(8px);
+        animation: float 4s ease-in-out infinite;
+      }
+
+      .wish-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff89bf, #8d6bff);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.34);
+        flex: 0 0 auto;
+      }
+
+      .wish-pill:nth-child(2)::before {
+        background: linear-gradient(135deg, #ffd56e, #ff9d6c);
+      }
+
+      .wish-pill:nth-child(3)::before {
+        background: linear-gradient(135deg, #7fd7ff, #8d6bff);
+      }
+
+      .wish-pill:nth-child(2) {
+        animation-delay: 0.35s;
+      }
+
+      .wish-pill:nth-child(3) {
+        animation-delay: 0.7s;
+      }
+
+      .stage {
+        position: relative;
+        margin-top: 14px;
+        height: 232px;
+      }
+
+      .cake-trigger {
+        position: absolute;
+        left: 50%;
+        bottom: 20px;
+        width: 250px;
+        height: 198px;
+        transform: translateX(-50%);
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+        appearance: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .cake-trigger::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 22px;
+        width: 210px;
+        height: 116px;
+        margin-left: -105px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 160, 212, 0.22) 0%, rgba(255, 160, 212, 0.08) 48%, transparent 74%);
+        opacity: 0.72;
+        transform: scale(0.96);
+        transition: transform 220ms ease, opacity 220ms ease;
+        pointer-events: none;
+      }
+
+      .cake-trigger:focus-visible {
+        outline: 3px solid rgba(255, 92, 168, 0.42);
+        outline-offset: 6px;
+        border-radius: 28px;
+      }
+
+      .cake-trigger:hover .cake,
+      .cake-trigger:focus-visible .cake {
+        transform: translateX(-50%) translateY(-12px) scale(1.09);
+      }
+
+      .cake-trigger:hover .flame,
+      .cake-trigger:focus-visible .flame {
+        filter: drop-shadow(0 0 20px rgba(255, 184, 75, 1));
+      }
+
+      .cake-trigger:hover::before,
+      .cake-trigger:focus-visible::before {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+
+      .cake-trigger:active .cake {
+        transform: translateX(-50%) translateY(-6px) scale(1.04);
+      }
+
+      .cake {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 204px;
+        height: 164px;
+        transform: translateX(-50%);
+        animation: cakeBounce 2.4s ease-in-out infinite;
+        transition: transform 220ms ease;
+      }
+
+      .cake-shadow {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        width: 188px;
+        height: 28px;
+        margin-left: -94px;
+        border-radius: 999px;
+        background: rgba(126, 72, 137, 0.16);
+        filter: blur(10px);
+        z-index: 1;
+      }
+
+      .cake-bottom,
+      .cake-top {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 24px;
+      }
+
+      .cake-bottom {
+        bottom: 18px;
+        width: 204px;
+        height: 82px;
+        z-index: 2;
+        background:
+          radial-gradient(circle at 26px 58px, rgba(255, 255, 255, 0.18) 0 5px, transparent 5.5px),
+          radial-gradient(circle at 62px 62px, rgba(255, 255, 255, 0.16) 0 4px, transparent 4.5px),
+          radial-gradient(circle at 102px 56px, rgba(255, 255, 255, 0.18) 0 5px, transparent 5.5px),
+          radial-gradient(circle at 144px 62px, rgba(255, 255, 255, 0.16) 0 4px, transparent 4.5px),
+          radial-gradient(circle at 178px 58px, rgba(255, 255, 255, 0.18) 0 5px, transparent 5.5px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 16px),
+          linear-gradient(180deg, #ffb7cf 0%, #ff95bb 52%, #ff7eab 100%);
+        box-shadow:
+          inset 0 2px 0 rgba(255, 255, 255, 0.28),
+          inset 0 -10px 0 rgba(214, 94, 136, 0.16),
+          0 12px 22px rgba(205, 102, 146, 0.16);
+        overflow: hidden;
+        border-radius: 26px 26px 32px 32px;
+      }
+
+      .cake-bottom::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 204px;
+        height: 32px;
+        margin-left: -102px;
+        background:
+          radial-gradient(circle at 16px 10px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 44px 14px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 74px 10px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 104px 14px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 134px 10px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 164px 14px, #fffafc 0 13px, transparent 13.5px),
+          radial-gradient(circle at 190px 10px, #fffafc 0 13px, transparent 13.5px),
+          linear-gradient(180deg, #fffefe, #fff1f7 72%, #ffdce9 100%);
+        border-radius: 26px 26px 16px 16px;
+        box-shadow: inset 0 -2px 0 rgba(255, 182, 213, 0.4);
+      }
+
+      .cake-bottom::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 42px;
+        width: 176px;
+        height: 12px;
+        margin-left: -88px;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 10px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 34px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 58px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 82px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 106px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 130px 6px, #fff7fb 0 6px, transparent 6.5px),
+          radial-gradient(circle at 154px 6px, #fff7fb 0 6px, transparent 6.5px),
+          linear-gradient(180deg, #fffafb, #ffe8f2);
+        box-shadow:
+          0 22px 0 rgba(255, 216, 232, 0.24),
+          inset 0 -1px 0 rgba(255, 174, 208, 0.32);
+      }
+
+      .cake-top {
+        bottom: 88px;
+        width: 166px;
+        height: 58px;
+        z-index: 3;
+        overflow: visible;
+        background: linear-gradient(180deg, #fff5fb 0%, #ffe5f1 58%, #ffc9de 100%);
+        box-shadow:
+          inset 0 8px 0 rgba(255, 255, 255, 0.46),
+          inset 0 -8px 0 rgba(255, 158, 193, 0.22);
+      }
+
+      .cake-top::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -8px;
+        width: 144px;
+        height: 18px;
+        margin-left: -72px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #ffffff, #ffeef7);
+        box-shadow: 0 4px 8px rgba(255, 190, 214, 0.24);
+      }
+
+      .icing {
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        overflow: hidden;
+      }
+
+      .icing::before,
+      .icing::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        width: 34px;
+        height: 28px;
+        border-radius: 50%;
+        background: #fff7fd;
+      }
+
+      .icing::before {
+        left: 18px;
+        box-shadow: 30px 4px 0 #fff7fd, 62px -2px 0 #fff7fd, 94px 3px 0 #fff7fd;
+      }
+
+      .icing::after {
+        right: 16px;
+        box-shadow: -34px 2px 0 #fff7fd, -68px -2px 0 #fff7fd;
+      }
+
+      .candle {
+        position: absolute;
+        left: 50%;
+        bottom: 48px;
+        width: 14px;
+        height: 34px;
+        margin-left: -7px;
+        z-index: 5;
+        border-radius: 999px;
+        background: repeating-linear-gradient(180deg, #ffffff 0 8px, #ff79b7 8px 16px);
+      }
+
+      .candle::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+        width: 20px;
+        height: 8px;
+        margin-left: -10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.55);
+      }
+
+      .flame {
+        position: absolute;
+        left: 50%;
+        top: -16px;
+        width: 20px;
+        height: 28px;
+        margin-left: -10px;
+        z-index: 6;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        background: radial-gradient(circle at 50% 35%, #fffde8 0 22%, #ffcb55 22% 58%, #ff7e3d 58% 100%);
+        filter: drop-shadow(0 0 10px rgba(255, 184, 75, 0.7));
+        transform-origin: center bottom;
+        animation: flicker 1.1s ease-in-out infinite;
+      }
+
+      .cake-cherry {
+        position: absolute;
+        top: 24px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #ffccd9 0 20%, #ff557d 20% 65%, #c92457 65% 100%);
+        box-shadow: 0 4px 10px rgba(201, 36, 87, 0.3);
+      }
+
+      .cake-cherry::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: -12px;
+        width: 2px;
+        height: 14px;
+        margin-left: -1px;
+        border-radius: 999px;
+        background: #6ca14a;
+        transform: rotate(-18deg);
+        transform-origin: bottom center;
+      }
+
+      .cake-cherry.left {
+        left: 24px;
+      }
+
+      .cake-cherry.right {
+        right: 24px;
+      }
+
+      .cake-sprinkles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .cake-sprinkle {
+        position: absolute;
+        width: 16px;
+        height: 5px;
+        border-radius: 999px;
+        transform: rotate(var(--rotate));
+        background: var(--color);
+        opacity: 0.92;
+      }
+
+      .cake-sprinkle.s1 { top: 20px; left: 26px; --rotate: 18deg; --color: #ff7eb6; }
+      .cake-sprinkle.s2 { top: 18px; left: 56px; --rotate: -12deg; --color: #8f74ff; }
+      .cake-sprinkle.s3 { top: 18px; right: 52px; --rotate: 20deg; --color: #7fd7ff; }
+      .cake-sprinkle.s4 { top: 24px; right: 24px; --rotate: -18deg; --color: #ffcf63; }
+      .cake-sprinkle.s5 { top: 42px; left: 46px; --rotate: 24deg; --color: #ffa36f; }
+      .cake-sprinkle.s6 { top: 40px; right: 40px; --rotate: -20deg; --color: #ff7eb6; }
+
+      .balloon {
+        width: 82px;
+        height: 96px;
+        border-radius: 50% 50% 48% 48%;
+        animation: float 4.8s ease-in-out infinite;
+      }
+
+      .balloon::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -52px;
+        width: 2px;
+        height: 54px;
+        background: rgba(97, 71, 109, 0.28);
+      }
+
+      .balloon::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -5px;
+        width: 14px;
+        height: 12px;
+        margin-left: -7px;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+        background: inherit;
+      }
+
+      .balloon-left {
+        left: 80px;
+        top: 120px;
+        background: linear-gradient(160deg, #ff7bb7, #ff4d93);
+      }
+
+      .balloon-right {
+        right: 88px;
+        top: 96px;
+        background: linear-gradient(160deg, #8d6bff, #6bc9ff);
+        animation-delay: 0.9s;
+      }
+
+      .sparkle {
+        font-size: 20px;
+        animation: twinkle 2s ease-in-out infinite;
+      }
+
+      .sparkle-a {
+        top: 110px;
+        left: 22%;
+      }
+
+      .sparkle-b {
+        top: 160px;
+        right: 24%;
+        animation-delay: 0.65s;
+      }
+
+      .sparkle-c {
+        bottom: 110px;
+        left: 18%;
+        animation-delay: 1.1s;
+      }
+
+      .confetti {
+        width: 12px;
+        height: 28px;
+        border-radius: 999px;
+        opacity: 0.8;
+        animation: confettiFall linear infinite;
+      }
+
+      .confetti:nth-child(1) { left: 10%; top: -8%; background: #ff77b8; animation-duration: 6.3s; animation-delay: -1.2s; }
+      .confetti:nth-child(2) { left: 18%; top: -14%; background: #ffd56e; animation-duration: 7.1s; animation-delay: -3.3s; }
+      .confetti:nth-child(3) { left: 31%; top: -18%; background: #8d6bff; animation-duration: 6.8s; animation-delay: -2.5s; }
+      .confetti:nth-child(4) { left: 45%; top: -10%; background: #7fd7ff; animation-duration: 5.8s; animation-delay: -1.4s; }
+      .confetti:nth-child(5) { left: 58%; top: -20%; background: #ff8d67; animation-duration: 6.2s; animation-delay: -4.2s; }
+      .confetti:nth-child(6) { left: 71%; top: -9%; background: #ffa6ce; animation-duration: 7.4s; animation-delay: -0.7s; }
+      .confetti:nth-child(7) { left: 84%; top: -16%; background: #9f8dff; animation-duration: 6.6s; animation-delay: -2.1s; }
+      .confetti:nth-child(8) { left: 92%; top: -11%; background: #ffd56e; animation-duration: 5.9s; animation-delay: -3.7s; }
+
+      .stage-tip {
+        position: absolute;
+        left: 50%;
+        bottom: -30px;
+        transform: translateX(-50%);
+        font-size: 14px;
+        font-weight: 700;
+        color: rgba(255, 92, 168, 0.88);
+        padding: 0;
+        white-space: nowrap;
+        letter-spacing: 0.04em;
+      }
+
+      .stage-tip::after {
+        content: "";
+        display: block;
+        width: 118px;
+        height: 1px;
+        margin: 8px auto 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 92, 168, 0.4), transparent);
+      }
+
+      .surprise-modal {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(67, 31, 75, 0.26);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 220ms ease, visibility 220ms ease;
+        z-index: 20;
+      }
+
+      .surprise-modal.is-open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .surprise-panel {
+        position: relative;
+        width: min(720px, 92vw);
+        padding: 32px 26px 24px;
+        border-radius: 32px;
+        background:
+          radial-gradient(circle at top right, rgba(255, 214, 110, 0.34), transparent 28%),
+          radial-gradient(circle at top left, rgba(255, 166, 208, 0.18), transparent 24%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(255, 247, 252, 0.94));
+        box-shadow: 0 28px 70px rgba(90, 43, 101, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.76);
+        transform: translateY(18px) scale(0.96);
+        transition: transform 240ms ease;
+      }
+
+      .surprise-modal.is-open .surprise-panel {
+        transform: translateY(0) scale(1);
+      }
+
+      .surprise-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(255, 92, 168, 0.12);
+        color: var(--primary);
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .surprise-title {
+        margin: 4px 0 10px;
+        font-size: clamp(30px, 5vw, 44px);
+        line-height: 1.12;
+        font-weight: 900;
+        color: var(--ink);
+        text-align: center;
+      }
+
+      .surprise-copy {
+        margin: 0;
+        max-width: 520px;
+        font-size: 17px;
+        line-height: 1.75;
+        color: rgba(84, 34, 87, 0.82);
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .clue-cta {
+        margin-top: 18px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: rgba(255, 92, 168, 0.92);
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-align: center;
+      }
+
+      .clue-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 16px;
+      }
+
+      .clue-card {
+        position: relative;
+        padding: 12px 12px 14px;
+        border-radius: 24px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 252, 0.9));
+        border: 1px solid rgba(255, 173, 209, 0.42);
+        box-shadow: 0 14px 28px rgba(107, 71, 126, 0.1);
+      }
+
+      .clue-card::before {
+        content: "";
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        width: 46px;
+        height: 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        transform: rotate(8deg);
+        box-shadow: 0 4px 10px rgba(122, 88, 137, 0.08);
+      }
+
+      .clue-image {
+        display: block;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        border-radius: 18px;
+        margin-bottom: 10px;
+        border: 5px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 12px 24px rgba(86, 58, 103, 0.14);
+      }
+
+      .clue-text {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.65;
+        color: rgba(84, 34, 87, 0.72);
+      }
+
+      @keyframes drift {
+        from { transform: translate3d(0, 0, 0) scale(1); }
+        to { transform: translate3d(10px, 24px, 0) scale(1.08); }
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(-2deg); }
+        50% { transform: translateY(-16px) rotate(2deg); }
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.04); }
+      }
+
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes bounceIn {
+        0% { opacity: 0; transform: scale(0.76); }
+        60% { opacity: 1; transform: scale(1.06); }
+        100% { transform: scale(1); }
+      }
+
+      @keyframes cakeBounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-10px); }
+      }
+
+      @keyframes flicker {
+        0%, 100% { transform: scale(1) rotate(-2deg); }
+        25% { transform: scale(1.08, 0.92) rotate(3deg); }
+        50% { transform: scale(0.94, 1.08) rotate(-4deg); }
+        75% { transform: scale(1.06, 0.94) rotate(2deg); }
+      }
+
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.45; transform: scale(0.88); }
+        50% { opacity: 1; transform: scale(1.2); }
+      }
+
+      @keyframes confettiFall {
+        0% { transform: translateY(-10vh) rotate(0deg); }
+        100% { transform: translateY(120vh) rotate(300deg); }
+      }
+
+      @media (max-width: 640px) {
+        .scene {
+          padding: 22px 22px 72px;
+        }
+
+        .card {
+          padding: 40px 24px 66px;
+          border-radius: 28px;
+        }
+
+        .balloon-left {
+          left: 24px;
+          top: 84px;
+          transform: scale(0.8);
+        }
+
+        .balloon-right {
+          right: 24px;
+          top: 74px;
+          transform: scale(0.8);
+        }
+
+        .stage {
+          margin-top: 30px;
+          height: 228px;
+        }
+
+        .stage-tip {
+          bottom: -28px;
+          font-size: 12px;
+        }
+
+        .surprise-panel {
+          padding: 28px 18px 20px;
+          border-radius: 26px;
+        }
+
+        .surprise-copy {
+          font-size: 16px;
+        }
+
+        .clue-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+
+      <div class="balloon balloon-left"></div>
+      <div class="balloon balloon-right"></div>
+
+      <div class="sparkle sparkle-a">✦</div>
+      <div class="sparkle sparkle-b">✦</div>
+      <div class="sparkle sparkle-c">✦</div>
+
+      <main class="card">
+        <div class="badge">DOUBLE BIRTHDAY</div>
+        <h1 class="title">祝 <span class="highlight">万万</span> 和 <span class="highlight">小姨</span><span class="title-break">生日快乐～</span></h1>
+        <p class="subtitle">今天要被蛋糕、星光和好运一起包围。愿你们新一岁继续闪闪发光，开心加倍，所有期待都准时降落。</p>
+
+        <div class="wish-row">
+          <div class="wish-pill">好运</div>
+          <div class="wish-pill">开心</div>
+          <div class="wish-pill">惊喜</div>
+        </div>
+
+        <section class="stage">
+          <button class="cake-trigger" type="button" aria-label="点击打开生日惊喜线索" aria-haspopup="dialog" aria-controls="surprise-modal" data-dom-id="open-surprise">
+            <div class="cake">
+              <div class="cake-shadow"></div>
+              <div class="cake-top">
+                <div class="candle">
+                  <div class="flame"></div>
+                </div>
+                <div class="icing"></div>
+                <div class="cake-cherry left"></div>
+                <div class="cake-cherry right"></div>
+                <div class="cake-sprinkles">
+                  <span class="cake-sprinkle s1"></span>
+                  <span class="cake-sprinkle s2"></span>
+                  <span class="cake-sprinkle s3"></span>
+                  <span class="cake-sprinkle s4"></span>
+                  <span class="cake-sprinkle s5"></span>
+                  <span class="cake-sprinkle s6"></span>
+                </div>
+              </div>
+              <div class="cake-bottom"></div>
+            </div>
+          </button>
+          <div class="stage-tip">点一下蛋糕，开启生日惊喜</div>
+        </section>
+      </main>
+    </div>
+
+    <div class="surprise-modal" id="surprise-modal" aria-hidden="true">
+      <div class="surprise-panel" role="dialog" aria-modal="true" aria-labelledby="surprise-title">
+        <button class="surprise-close" type="button" aria-label="关闭惊喜弹层">×</button>
+        <h2 class="surprise-title" id="surprise-title">生日惊喜</h2>
+        <p class="surprise-copy">我们已经准备好了一份属于你们的生日惊喜。先看看下面两张线索图，去找到那个地方吧。</p>
+        <p class="clue-cta">TWO LITTLE CLUES</p>
+
+        <div class="clue-grid">
+          <div class="clue-card" id="clue-1">
+            <img class="clue-image" src="./assets/clue-green-plant.png" alt="线索一图片" />
+            <p class="clue-text">线索一：留意那个一眼看上去就很有氛围感的小角落。</p>
+          </div>
+          <div class="clue-card" id="clue-2">
+            <img class="clue-image" src="./assets/clue-plush-tree.png" alt="线索二图片" />
+            <p class="clue-text">线索二：再看看这个可爱的小提示，答案已经越来越近了。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.getElementById('surprise-modal');
+      const trigger = document.querySelector('.cake-trigger');
+      const closeButton = document.querySelector('.surprise-close');
+
+      function openModal() {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      trigger.addEventListener('click', openModal);
+      closeButton.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeModal();
+      });
+    </script>
+  </body>
+</html>
