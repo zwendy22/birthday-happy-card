@@ -115,12 +115,19 @@
         letter-spacing: 0.01em;
         font-family: "Hannotate SC", "STKaiti", "KaiTi", "DFKai-SB", "PingFang SC", cursive;
         text-shadow: 0 10px 30px rgba(255, 92, 168, 0.16);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         animation: bounceIn 1.15s cubic-bezier(0.22, 1, 0.36, 1) both, pulse 2.8s ease-in-out 1.2s infinite;
       }
 
       .title-break {
         display: block;
         margin-top: 8px;
+        width: 100%;
+        text-align: center;
       }
 
       .highlight {
@@ -701,6 +708,9 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 252, 0.9));
         border: 1px solid rgba(255, 173, 209, 0.42);
         box-shadow: 0 14px 28px rgba(107, 71, 126, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .clue-card::before {
@@ -718,9 +728,11 @@
 
       .clue-image {
         display: block;
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        object-fit: cover;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 360px;
+        object-fit: contain;
         border-radius: 18px;
         margin-bottom: 10px;
         border: 5px solid rgba(255, 255, 255, 0.9);
