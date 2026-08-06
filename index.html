@@ -851,9 +851,9 @@
       <div class="sparkle sparkle-c">✦</div>
 
       <main class="card">
-        <div class="badge">DOUBLE BIRTHDAY</div>
-        <h1 class="title">祝 <span class="highlight">万万</span> 和 <span class="highlight">小姨</span><span class="title-break">生日快乐～</span></h1>
-        <p class="subtitle">今天要被蛋糕、星光和好运一起包围。愿你们新一岁继续闪闪发光，开心加倍，所有期待都准时降落。</p>
+        <div class="badge">万万没想到</div>
+        <h1 class="title">祝 <span class="highlight">万万</span><span class="title-break">生日快乐～</span></h1>
+        <p class="subtitle">今天要被蛋糕、星光和好运一起包围。愿你新一岁继续闪闪发光，开心加倍，所有期待都准时降落。</p>
 
         <div class="wish-row">
           <div class="wish-pill">好运</div>
@@ -893,16 +893,16 @@
       <div class="surprise-panel" role="dialog" aria-modal="true" aria-labelledby="surprise-title">
         <button class="surprise-close" type="button" aria-label="关闭惊喜弹层">×</button>
         <h2 class="surprise-title" id="surprise-title">生日惊喜</h2>
-        <p class="surprise-copy">我们已经准备好了一份属于你们的生日惊喜。先看看下面两张线索图，去找到那个地方吧。</p>
-        <p class="clue-cta">TWO LITTLE CLUES</p>
+        <p class="surprise-copy">我们已经准备好了一份属于你的生日惊喜。先看看下面两张线索图，去找到那个地方吧。</p>
+        <p class="clue-cta">生日惊喜线索</p>
 
         <div class="clue-grid">
           <div class="clue-card" id="clue-1">
-            <img class="clue-image" src="./assets/clue-green-plant.png" alt="线索一图片" />
+            <img class="clue-image" src="./assets/clue-green-plant.png" alt="线索一图片" width="720" height="960" loading="lazy" decoding="async" />
             <p class="clue-text">线索一：留意那个一眼看上去就很有氛围感的小角落。</p>
           </div>
           <div class="clue-card" id="clue-2">
-            <img class="clue-image" src="./assets/clue-plush-tree.png" alt="线索二图片" />
+            <img class="clue-image" src="./assets/clue-plush-tree.png" alt="线索二图片" width="720" height="960" loading="lazy" decoding="async" />
             <p class="clue-text">线索二：再看看这个可爱的小提示，答案已经越来越近了。</p>
           </div>
         </div>
@@ -913,8 +913,19 @@
       const modal = document.getElementById('surprise-modal');
       const trigger = document.querySelector('.cake-trigger');
       const closeButton = document.querySelector('.surprise-close');
+      const clueImages = Array.from(document.querySelectorAll('.clue-image'));
+
+      function warmClueImages() {
+        clueImages.forEach((image) => {
+          if (image.dataset.warmed === 'true') return;
+          const preload = new Image();
+          preload.src = image.currentSrc || image.src;
+          image.dataset.warmed = 'true';
+        });
+      }
 
       function openModal() {
+        warmClueImages();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
       }
@@ -929,6 +940,14 @@
 
       modal.addEventListener('click', (event) => {
         if (event.target === modal) closeModal();
+      });
+
+      window.addEventListener('load', () => {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(warmClueImages, { timeout: 1200 });
+        } else {
+          setTimeout(warmClueImages, 320);
+        }
       });
 
       document.addEventListener('keydown', (event) => {
